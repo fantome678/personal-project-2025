@@ -192,7 +192,7 @@ public class PlayerScript : MonoBehaviour
 
                 TPPlayerIn(temp);
                 door.transform.Rotate(0, -115, 0);
-                GetComponentInChildren<CinemachineVirtualCamera>().m_Lens.FieldOfView = 20;
+                GetComponentInChildren<CinemachineVirtualCamera>().m_Lens.FieldOfView = 40;
             }
         }
         else

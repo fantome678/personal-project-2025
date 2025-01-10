@@ -30,8 +30,7 @@ public class PatrollerTask : Node
                 {
 
                     index = Random.Range(0, moveAgent.Count);
-                    //index = 5;
-                  //  Debug.Log(index);
+
                     agentTransform.SetDestination(moveAgent[index].position);
                     agentTransform.speed = EnemyIA.speed;
 

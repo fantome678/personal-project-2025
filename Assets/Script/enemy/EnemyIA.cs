@@ -79,11 +79,11 @@ public class EnemyIA : Tree
             new CheckRoom(agent, viewEnemy),
           }),
 
-         /* new Sequence(new List<Node>
+          new Sequence(new List<Node>
          {
              new LookHideOut(agent, hideOutList),
              new SearchHideOut(agent, viewEnemy, Player),
-          }),*/
+          }),
 
             new PatrollerTask(agent, pointPatroler, Player),
          });

@@ -12,9 +12,11 @@ public class StateActionPlayerScript : MonoBehaviour
     [SerializeField] private float timerBeforeHideOut;
     [SerializeField] private bool IAHasPosplayer;
     [SerializeField] private bool IACanSeeHideOut;
+    [SerializeField] private bool IAPredictYourMove;
 
     public bool GoPointSee;
     public bool isPursuit;
+    public bool isPredict;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +28,7 @@ public class StateActionPlayerScript : MonoBehaviour
         timerBeforeHideOut = 0;
         IAHasPosplayer = false;
         isPursuit = false;
+        isPredict = false;
     }
 
     // Update is called once per frame

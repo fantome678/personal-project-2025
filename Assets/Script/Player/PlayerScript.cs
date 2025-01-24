@@ -1,7 +1,9 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
+using static Unity.Burst.Intrinsics.X86;
 using static UnityEditor.PlayerSettings;
 
 public class PlayerScript : MonoBehaviour
@@ -16,8 +18,7 @@ public class PlayerScript : MonoBehaviour
     public bool couldown;
     public float timerCouldown;
 
-    [SerializeField] GameObject virtualCam;
-    [SerializeField] GameObject flame;
+    [SerializeField] public GameObject flame;
 
     bool run;
     int rayonMove;
@@ -30,7 +31,7 @@ public class PlayerScript : MonoBehaviour
     {
         listSmoke = new List<GameObject>();
         couldown = false;
-        timerCouldown = 0;
+        timerCouldown = 8.0f;
         add = 0;
         run = false;
         valueMultiplySpeed = 1;
@@ -41,12 +42,6 @@ public class PlayerScript : MonoBehaviour
 
     void Moveplayer()
     {
-        currentRotation.x += Input.GetAxis("Mouse X") * sensitivity;
-        currentRotation.y -= Input.GetAxis("Mouse Y") * sensitivity;
-        currentRotation.x = Mathf.Repeat(currentRotation.x, 360);
-        currentRotation.y = Mathf.Clamp(currentRotation.y, -maxYAngle, maxYAngle);
-        transform.rotation = Quaternion.Euler(transform.rotation.y, currentRotation.x, 0);
-        virtualCam.transform.rotation = Quaternion.Euler(currentRotation.y, currentRotation.x, 0);
 
         if (!isHide)
         {
@@ -74,27 +69,63 @@ public class PlayerScript : MonoBehaviour
             transform.Translate(new Vector3(Input.GetAxis("Horizontal") * speed * Time.deltaTime, 0, Input.GetAxis("Vertical") * (speed * valueMultiplySpeed) * Time.deltaTime));
         }
     }
-    // Update is called once per frame
-    void Update()
+
+    void ShootPlayer()
     {
-        if (couldown)
+        if (flame.activeSelf)
         {
-            timerCouldown += Time.deltaTime;
-            if (timerCouldown > 8.0f)
+            if(Input.GetAxis("Fire1") != 0)
             {
-                couldown = false;
-                timerCouldown = 0;
+                flame.GetComponent<Gun>().isFire = true;
             }
-            if (timerCouldown > 6.0f)
+            else
             {
-                if (listSmoke.Count > 0)
+                flame.GetComponent<Gun>().isFire = false;
+            }
+        }
+        else
+        {
+           
+            if (couldown)
+            {
+                /*   timerCouldown += Time.deltaTime;
+                   if (timerCouldown > 8.0f)
+                   {
+                       couldown = false;
+                       timerCouldown = 0;
+                   }
+                   if (timerCouldown > 6.0f)
+                   {
+                       if (listSmoke.Count > 0)
+                       {
+                           Destroy(listSmoke[0].gameObject);
+                           listSmoke.RemoveAt(0);
+                       }
+                   }*/
+                timerCouldown -= Time.deltaTime;
+                if (timerCouldown < 0f)
                 {
-                    Destroy(listSmoke[0].gameObject);
-                    listSmoke.RemoveAt(0);
+                    couldown = false;
+                    timerCouldown = 8.0f;
+                }
+                if (timerCouldown < 2.0f)
+                {
+                    if (listSmoke.Count > 0)
+                    {
+                        Destroy(listSmoke[0].gameObject);
+                        listSmoke.RemoveAt(0);
+                    }
                 }
             }
         }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
         Moveplayer();
+        ShootPlayer();
     }
 
     // show noise do player
@@ -104,7 +135,6 @@ public class PlayerScript : MonoBehaviour
         {
             if (Vector3.Distance(pos, transform.position) < (rayonMove + add))
             {
-                //Debug.Log("fqfqf" + Vector3.Distance(pos, transform.position));
 
                 return transform;
             }
@@ -115,7 +145,6 @@ public class PlayerScript : MonoBehaviour
 
     public bool GetRun()
     {
-
         return run;
     }
 
@@ -162,7 +191,6 @@ public class PlayerScript : MonoBehaviour
         {
             if (hit.collider != null)
             {
-                // Debug.Log(hit.collider.gameObject.name);
                 if (hit.collider.gameObject.CompareTag("downHideout"))
                 {
                     return true;
@@ -231,8 +259,33 @@ public class PlayerScript : MonoBehaviour
         transform.position = pos;
     }
 
+    public bool OnSee(Transform _pos)
+    {
+        if (Vector3.Distance(transform.position, _pos.position) < 20)
+        {
+            Vector3 disPlayerEnemy = _pos.position - transform.position;
+            float angle = Vector3.Angle(transform.forward, disPlayerEnemy);
+            if (angle < 80)
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, disPlayerEnemy, out hit)) // visible physique
+                {
+                    Debug.DrawLine(transform.position, hit.point);
+                    if (hit.collider.gameObject.tag == _pos.gameObject.tag)
+                    {
+                         Debug.Log("see IA");
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+        }
+        return false;
+    }
+
     private void OnDrawGizmos()
     {
-        Gizmos.DrawSphere(transform.position, rayonMove + add);
+       // Gizmos.DrawSphere(transform.position, rayonMove + add);
     }
 }

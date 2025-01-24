@@ -16,13 +16,16 @@ public class CreateSmoke : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonUp("Fire1") && GetComponentInParent<PlayerScript>().couldown == false)
+        if (Input.GetButtonUp("Fire1"))
         {
-            GameObject temp = Instantiate(prefab, GetComponentInParent<Transform>().position, transform.rotation);
+            if (GetComponentInParent<PlayerScript>().couldown == false && GetComponentInParent<PlayerScript>().flame.activeSelf == false)
+            {
+                GameObject temp = Instantiate(prefab, GetComponentInParent<Transform>().position, transform.rotation);
 
-            temp.GetComponent<Rigidbody>().AddRelativeForce(0, 50, launchVelocity);
-            GetComponentInParent<PlayerScript>().listSmoke.Add(temp);
-            GetComponentInParent<PlayerScript>().couldown = true;
+                temp.GetComponent<Rigidbody>().AddRelativeForce(0, 50, launchVelocity);
+                GetComponentInParent<PlayerScript>().listSmoke.Add(temp);
+                GetComponentInParent<PlayerScript>().couldown = true;
+            }
         }
     }
 }

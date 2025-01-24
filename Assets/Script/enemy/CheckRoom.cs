@@ -10,7 +10,6 @@ public class CheckRoom : Node
 {
     NavMeshAgent _agent;
     ViewEnemy _ViewEnemy;
-    
 
     public CheckRoom(NavMeshAgent agent, ViewEnemy viewEnemy)
     {
@@ -69,8 +68,6 @@ public class CheckRoom : Node
                     ClearData("seePoint");
                 }
             }
-
-
         }
         state = NodeState.RUNNING;
         return state;

@@ -242,6 +242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  trigger: {fileID: 0}
   isOpen: 1
 --- !u!1 &1933070764388136520
 GameObject:
@@ -503,8 +504,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8.540619, y: 12.919898, z: 8.660575}
-  m_Center: {x: -0.38200378, y: -4.952068, z: 3.8302875}
+  m_Size: {x: 15.570319, y: 12.919898, z: 8.660575}
+  m_Center: {x: 1.3746037, y: -4.952068, z: 3.8302875}
 --- !u!1 &6969037318542707869
 GameObject:
   m_ObjectHideFlags: 0

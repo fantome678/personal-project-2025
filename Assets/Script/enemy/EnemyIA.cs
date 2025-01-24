@@ -1,6 +1,8 @@
 using BehaviorTree;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
+using Unity.MLAgents;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
@@ -9,7 +11,7 @@ public class EnemyIA : Tree
     public enum StateSee
     {
         none,
-        find,
+        retreat,
         look,
         see,
         research,
@@ -35,6 +37,7 @@ public class EnemyIA : Tree
     public static float timerCheckRoom;
     public static int counter;
     public static int counterSearch;
+    public static UnityEngine.Transform transformStatic;
     // public static bool isPursuit;
 
     public static StateSee seeSomething;
@@ -59,7 +62,14 @@ public class EnemyIA : Tree
         {
             hideOutList[i].GetComponent<HideOutScript>().index = i;
         }
-        // UnityEngine.Debug.Log(hideOutList[0].name);
+
+        transformStatic = transform;
+    }
+
+    public static void TPPlayer(UnityEngine.Vector3 _pos)
+    {
+        transformStatic.position = _pos;
+
     }
 
     protected override Node SetupTree()
@@ -67,23 +77,28 @@ public class EnemyIA : Tree
         Node root = new Selector(new List<Node>
          {
 
-       new Sequence(new List<Node>
-         {
-           new ViewPlayer(Player.transform, agent, viewEnemy),
-           new ToPlayerEnemy(agent, viewEnemy),
-         }),
+            new Sequence(new List<Node> {
+                new Retreat(agent, skillIA.PointToRetreat.transform.position),
+                new RetreatUpdate(agent),
+            }),
 
-         new Sequence(new List<Node>
-         {
-            new GoSeePoint(agent, Player.GetComponentInParent<PlayerScript>()),
-            new CheckRoom(agent, viewEnemy),
-          }),
+            new Sequence(new List<Node>
+            {
+                new ViewPlayer(Player.transform, agent, viewEnemy),
+                new ToPlayerEnemy(agent, viewEnemy),
+            }),
 
-          new Sequence(new List<Node>
-         {
-             new LookHideOut(agent, hideOutList),
-             new SearchHideOut(agent, viewEnemy, Player),
-          }),
+            new Sequence(new List<Node>
+            {
+                new GoSeePoint(agent, Player.GetComponentInParent<PlayerScript>()),
+                new CheckRoom(agent, viewEnemy),
+            }),
+
+            new Sequence(new List<Node>
+            {
+                new LookHideOut(agent, hideOutList),
+                new SearchHideOut(agent, viewEnemy, Player),
+            }),
 
             new PatrollerTask(agent, pointPatroler, Player),
          });
@@ -99,8 +114,22 @@ public class EnemyIA : Tree
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            SceneManager.LoadScene(0);
+            GameOver();
         }
+    }
+
+    private void OnTriggerEnter(UnityEngine.Collider other)
+    {
+        if (other.CompareTag("FlameCollider"))
+        {
+            seeSomething = StateSee.retreat;
+            UnityEngine.Debug.Log("sqgsqgq");
+        }
+    }
+
+    public static void GameOver()
+    {
+        SceneManager.LoadScene(0);
     }
 
     public static void ResetToPlayerEnemy()

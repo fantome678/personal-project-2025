@@ -46,7 +46,6 @@ public class SmokeScript : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Corridor") || collision.gameObject.CompareTag("Room"))
         {
-            Debug.Log("zegazf");
             onGround = true;
         }
     }

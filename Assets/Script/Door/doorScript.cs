@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class DoorScript : MonoBehaviour
 {
     [SerializeField] float speed;
+    [SerializeField] GameObject trigger;
     public bool isOpen;
     Vector3 posBegin;
     Vector3 posEnd;
@@ -14,7 +15,7 @@ public class DoorScript : MonoBehaviour
     {
         posBegin = transform.position;
         // Debug.Log(posBegin);
-        posEnd = new Vector3(transform.position.x, transform.position.y + 3.0f, transform.position.z);
+        posEnd = new Vector3(transform.position.x, transform.position.y + 8.0f, transform.position.z);
         // Debug.Log(posEnd);
         if (isOpen)
         {
@@ -39,18 +40,26 @@ public class DoorScript : MonoBehaviour
             if (transform.position.y < posEnd.y)
             {
                 transform.Translate(0, speed * Time.deltaTime, 0);
-                
+
             }
-            GetComponent<NavMeshObstacle>().carving = false;
+           // GetComponent<NavMeshObstacle>().carving = false;
+            if (trigger != null)
+            {
+                trigger.SetActive(true);
+            }
         }
         else
         {
             if (transform.position.y > posBegin.y)
             {
                 transform.Translate(0, -speed * Time.deltaTime, 0);
-               
+
             }
-            GetComponent<NavMeshObstacle>().carving = true;
+            //GetComponent<NavMeshObstacle>().carving = true;
+            if (trigger != null)
+            {
+                trigger.SetActive(false);
+            }
         }
     }
 }

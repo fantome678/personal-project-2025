@@ -26,11 +26,11 @@ public class HideOutScript : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
        
-        if (other.gameObject.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
             //door.transform.Rotate(0, 115, 0);
             //PlayerScript player = other.gameObject.GetComponent<PlayerScript>();
-            other.gameObject.GetComponent<PlayerScript>().InteractFunction(door, transform);
+            other.GetComponentInParent<PlayerScript>().InteractFunction(door, transform);
         }
         if (other.gameObject.CompareTag("IA"))
         {

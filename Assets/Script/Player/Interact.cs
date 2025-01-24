@@ -21,10 +21,10 @@ public class Interract : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.gameObject.CompareTag("Player"))
+        if(other.CompareTag("Player"))
         {
             //Debug.Log("gsg");
-            if (other.gameObject.GetComponent<PlayerScript>().ButtonFunction())
+            if (other.GetComponentInParent<PlayerScript>().ButtonFunction())
             {
                 doorScript.GetComponent<DoorScript>().isOpen = !doorScript.GetComponent<DoorScript>().isOpen;
             }

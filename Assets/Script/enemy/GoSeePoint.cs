@@ -16,8 +16,6 @@ public class GoSeePoint : Node
 
     public override NodeState Evaluate()
     {
-
-        //Debug.Log(playerScript.GetTransform().position);
         if (EnemyIA.seeSomething == EnemyIA.StateSee.none || EnemyIA.seeSomething == EnemyIA.StateSee.lookHideOut || EnemyIA.seeSomething == EnemyIA.StateSee.research)
         {
            // function with smoke
@@ -30,7 +28,6 @@ public class GoSeePoint : Node
                     EnemyIA.seeSomething = EnemyIA.StateSee.look;
                     parent.parent.SetData("seePoint", playerScript.GetTransform(agent.transform.position).position);
                     agent.SetDestination(playerScript.GetTransform(agent.transform.position).position);
-                    //     Debug.Log("posPlayer" + playerScript.GetTransform(agent.transform.position).position);
                     state = NodeState.SUCCESS;
                     return state;
                 }
@@ -55,7 +52,6 @@ public class GoSeePoint : Node
             state = NodeState.FAILURE;
             return state;
         }
-
         state = NodeState.SUCCESS;
         return state;
     }

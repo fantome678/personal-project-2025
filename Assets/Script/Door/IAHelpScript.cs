@@ -7,16 +7,20 @@ public class IAHelpScript : MonoBehaviour
 {
 
     [SerializeField] List<Transform> pos;
+    public bool playerIsEnter;
+
+    public Vector3 posToSpawnAI;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        playerIsEnter = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -24,30 +28,38 @@ public class IAHelpScript : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             GetDirection(other.transform.position);
+            playerIsEnter = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            playerIsEnter = false;
         }
     }
 
     void GetDirection(Vector3 direction)
     {
         //Vector3 pos = transform.position;
-        Vector3 dir = (direction - transform.position);
-        if (dir.x > -3.5f && dir.x < -3f)
+
+        //posToSpawnAI = Vector3.zero;
+
+        Vector3 distance = (direction - transform.position);
+        float dir = Vector3.Angle(transform.position, distance);
+       // Debug.Log("dir" + dir);
+        if (dir < 90)
         {
-            Debug.Log(pos[0]);
+            posToSpawnAI = pos[1].position;
+            Debug.Log("down");
         }
-        else if (dir.x > 3f && dir.x < 3.5f)
+        else 
         {
-            Debug.Log(pos[1]);
+            posToSpawnAI = pos[0].position;
+            Debug.Log("up");
         }
-        else if (dir.z > 2.5f && dir.z < 2.85f)
-        {
-            Debug.Log(pos[2]);
-        }
-        else if (dir.z > -4f && dir.z < -3.5f)
-        {
-            Debug.Log(pos[3]);
-        }
-        Debug.Log(dir);
+        // posToSpawnAI = Vector3.zero;
     }
 
 }

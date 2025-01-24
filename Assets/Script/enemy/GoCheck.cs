@@ -31,23 +31,7 @@ public class GoCheck : Node
             return state;
         }
 
-        if (EnemyIA.seeSomething == EnemyIA.StateSee.find)
-        {
-
-            if (GetData("seePoint") != null)
-            {
-                Debug.Log("in find");
-                _agent.SetDestination((Vector3)GetData("seePoint"));
-
-                if (_agent.remainingDistance < 0.06f)
-                {
-                    EnemyIA.seeSomething = EnemyIA.StateSee.look;
-                }
-            }
-
-        }
-
-        state = NodeState.RUNNING;
+        state = NodeState.SUCCESS;
         return state;
     }
 }

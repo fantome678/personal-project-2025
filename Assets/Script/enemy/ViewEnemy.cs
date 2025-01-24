@@ -11,7 +11,6 @@ public class ViewEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Debug.Log(dis);
         see = false;
     }
 
@@ -33,13 +32,8 @@ public class ViewEnemy : MonoBehaviour
                 if (Physics.Raycast(transform.position, disPlayerEnemy, out hit)) // visible physique
                 {
                      Debug.DrawLine(transform.position, hit.point);
-                    // Debug.Log("hit: " + hit.collider.gameObject.name);
-                    // Debug.Log("player: " + _Player.gameObject.name);
-                    // Debug.Log(hit.collider.gameObject);
                     if (hit.collider.gameObject.tag == _Player.gameObject.tag)
                     {
-                        // Debug.Log("see Player");
-                        // transform.LookAt(hit.collider.transform);
                         see = true;
                         return true;
                     }

@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class StateActionPlayerScript : MonoBehaviour
 {
-    [SerializeField] PlayerScript script;
+    [SerializeField] public GameObject PointToRetreat;
+    [SerializeField] public PlayerScript script;
+    [SerializeField] List<GameObject> triggerList;
 
     public float[] timerIACanSeeHideOut;
     [SerializeField] private float timerGeneral;
     [SerializeField] private float timerBeforeGivePlayerPos;
     [SerializeField] private float timerBeforeHideOut;
+    [SerializeField] private float timerIsPredict;
     [SerializeField] private bool IAHasPosplayer;
     [SerializeField] private bool IACanSeeHideOut;
     [SerializeField] private bool IAPredictYourMove;
@@ -21,14 +24,17 @@ public class StateActionPlayerScript : MonoBehaviour
     void Start()
     {
         script = FindAnyObjectByType<PlayerScript>();
+        triggerList.AddRange(GameObject.FindGameObjectsWithTag("Trigger"));
         timerGeneral = 0;
         timerIACanSeeHideOut[0] = 0;
         timerIACanSeeHideOut[1] = 0;
-        IACanSeeHideOut = false;
         timerBeforeHideOut = 0;
+        timerIsPredict = 0;
+
+        IACanSeeHideOut = false;
         IAHasPosplayer = false;
         isPursuit = false;
-        isPredict = false;
+        isPredict = true;
     }
 
     // Update is called once per frame
@@ -38,6 +44,7 @@ public class StateActionPlayerScript : MonoBehaviour
 
         StateInformationPlayer();
         StateIACanSeeHideOut();
+        StateIACanPredictInPursuit();
     }
 
     void StateInformationPlayer()
@@ -82,6 +89,39 @@ public class StateActionPlayerScript : MonoBehaviour
         }
     }
 
+    void StateIACanPredictInPursuit()
+    {
+        if (timerGeneral > 30 && IAPredictYourMove == false)
+        {
+            IAPredictYourMove = true;
+        }
+        else
+        {
+            if (IAPredictYourMove && timerIsPredict < 15f && isPredict == false)
+            {
+                timerIsPredict += Time.deltaTime;
+            }
+            else
+            {
+                isPredict = true;
+                timerIsPredict = 0;
+            }
+        }
+    }
+
+    public Vector3 IsPursuitState()
+    {
+            for (int i = 0; i < triggerList.Count; i++)
+            {
+                if (triggerList[i].GetComponent<IAHelpScript>().playerIsEnter)
+                {
+                    Debug.Log(triggerList[i].GetComponent<IAHelpScript>().posToSpawnAI);
+                    return triggerList[i].GetComponent<IAHelpScript>().posToSpawnAI;
+                }
+            }
+        return Vector3.zero;
+    }
+
     public void ResetTimer()
     {
         timerBeforeHideOut = 0;
@@ -91,8 +131,6 @@ public class StateActionPlayerScript : MonoBehaviour
     public Transform GetPlayer()
     {
         return script.transform;
-
     }
-
 }
 

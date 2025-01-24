@@ -15,36 +15,74 @@ public class ToPlayerEnemy : Node
 
     public override NodeState Evaluate()
     {
-        Transform target = (Transform)GetData("target");
+       // Transform target = (Transform)GetData("target");
 
         if (EnemyIA.seeSomething == EnemyIA.StateSee.see)
         {
-            if (target != null)
+            /* if (target != null)
+             {
+                 if (Vector3.Distance(_Pos.transform.position, target.position) > 0.01f)
+                 {
+                     EnemyIA.skillIA.ResetTimer();
+
+                     _Pos.SetDestination(target.position);
+
+
+                     EnemyIA.pointOnSeePos = new Vector3(target.position.x, target.position.y, target.position.z);
+                 }
+             }*/
+
+            if (_Pos.speed < 8.2f)
             {
-                if (Vector3.Distance(_Pos.transform.position, target.position) > 0.01f)
+                _Pos.speed += 1.005f * Time.deltaTime;
+                //  Debug.Log("see" + _Pos.speed);
+            }
+
+            if (Vector3.Distance(_Pos.transform.position, EnemyIA.skillIA.script.transform.position) > 4 && EnemyIA.skillIA.isPredict && !EnemyIA.skillIA.script.OnSee(_Pos.transform))
+            {
+                // Debug.Log(EnemyIA.skillIA.IsPursuitState());
+                if (EnemyIA.skillIA.IsPursuitState() != Vector3.zero)
+                {
+                    Vector3 pos = EnemyIA.skillIA.IsPursuitState();
+                    EnemyIA.TPPlayer(pos);
+                    parent.parent.SetData("last", EnemyIA.skillIA.script.transform.position);
+                    _Pos.SetDestination(EnemyIA.skillIA.script.transform.position);
+                }
+                EnemyIA.skillIA.isPredict = false;
+
+            }
+
+            if (Vector3.Distance(_Pos.transform.position, EnemyIA.skillIA.script.transform.position) > 0.01f)
+            {
+                if (_ViewEnemy.OnSee(EnemyIA.skillIA.script.transform))
                 {
                     EnemyIA.skillIA.ResetTimer();
 
-                    _Pos.SetDestination(target.position);
-                    
+                    _Pos.SetDestination(EnemyIA.skillIA.script.transform.position);
 
-                    EnemyIA.pointOnSeePos = new Vector3(target.position.x, target.position.y, target.position.z);
+                }
+                else
+                {
+                    EnemyIA.seeSomething = EnemyIA.StateSee.research;
+                    _Pos.SetDestination(EnemyIA.skillIA.script.transform.position);
+
+                    ClearData("seePoint");
+                    parent.parent.SetData("last", EnemyIA.skillIA.script.transform.position);
+                    EnemyIA.ResetToPlayerEnemy();
                 }
             }
-            if (_Pos.speed < 10f)
-            {
-                _Pos.speed += 1.002f * Time.deltaTime;
-                Debug.Log("see" + _Pos.speed);
-            }
+
+
         }
         else if (EnemyIA.seeSomething == EnemyIA.StateSee.research)
         {
             if (_Pos.speed > EnemyIA.speed * 2)
             {
                 _Pos.speed -= 1.0015f * Time.deltaTime;
-                Debug.Log("reseach" + _Pos.speed);
+                // Debug.Log("reseach" + _Pos.speed);
             }
-            if (_ViewEnemy.OnSee((Transform)GetData("target")) == true)
+
+            if (_ViewEnemy.OnSee(EnemyIA.skillIA.script.transform) == true)
             {
                 EnemyIA.seeSomething = EnemyIA.StateSee.none;
                 ClearData("seePoint");
@@ -54,43 +92,55 @@ public class ToPlayerEnemy : Node
             }
 
             Vector3 pos = (Vector3)GetData("last");
-            Vector3 randomOffset = Random.insideUnitSphere;
-            // Debug.Log("Pos de la derniere position du dictionnaire : "+pos);
 
-            // if he saw me in the research, return to begin Node
-            EnemyIA.timerCheckRoom += Time.deltaTime;
-            // Debug.Log("fssffgs" + pos);
-            if (EnemyIA.timerCheckRoom > 1)
-            {
-                EnemyIA.timerCheckRoom = 0;
-                EnemyIA.counter++;
-                if (EnemyIA.counter < 4)
-                {
-                    randomOffset.y = 0.0f;
-                    randomOffset *= 5;
 
-                    NavMeshHit hit;
-                    if (NavMesh.SamplePosition(pos + randomOffset, out hit, 1.0f, NavMesh.AllAreas))
-                    {
-                        Debug.Log("fssffgs" + randomOffset);
-                        // agentTransform.transform.LookAt(pos.position + randomOffset);
-                        _Pos.SetDestination(pos + randomOffset);
-
-                    }
-                }
-                else
-                {
-                    EnemyIA.seeSomething = EnemyIA.StateSee.none;
-                    EnemyIA.timerCheckRoom = 0;
-                    EnemyIA.counter = 0;
-                    ClearData("target");
-                    ClearData("last");
-                    _Pos.speed = EnemyIA.speed;
-                }
-            }
-
+            Research(pos);
         }
+
+        
+
         state = NodeState.RUNNING;
         return state;
     }
+
+    private void Research(Vector3 _pos)
+    {
+        // Vector3 pos = (Vector3)GetData("last");
+        Vector3 pos = _pos;
+        Vector3 randomOffset = Random.insideUnitSphere;
+       //  Debug.Log("Pos de la derniere position du dictionnaire : "+pos);
+
+        // if he saw me in the research, return to begin Node
+        EnemyIA.timerCheckRoom += Time.deltaTime;
+        // Debug.Log("fssffgs" + pos);
+        if (EnemyIA.timerCheckRoom > 1)
+        {
+            EnemyIA.timerCheckRoom = 0;
+            EnemyIA.counter++;
+            if (EnemyIA.counter < 4)
+            {
+                randomOffset.y = 0.0f;
+                randomOffset *= 5;
+
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(pos + randomOffset, out hit, 1.0f, NavMesh.AllAreas))
+                {
+                    Debug.Log("fssffgs" + randomOffset);
+                    // agentTransform.transform.LookAt(pos.position + randomOffset);
+                    _Pos.SetDestination(pos + randomOffset);
+
+                }
+            }
+            else
+            {
+                EnemyIA.seeSomething = EnemyIA.StateSee.none;
+                EnemyIA.timerCheckRoom = 0;
+                EnemyIA.counter = 0;
+                ClearData("target");
+                ClearData("last");
+                _Pos.speed = EnemyIA.speed;
+            }
+        }
+    }
+
 }

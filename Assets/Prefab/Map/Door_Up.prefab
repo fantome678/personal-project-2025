@@ -241,7 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 101fc0ac14b399c46bb2b1bb096e7060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 8
   trigger: {fileID: 0}
   isOpen: 1
 --- !u!1 &1933070764388136520

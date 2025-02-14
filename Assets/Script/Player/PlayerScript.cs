@@ -1,10 +1,14 @@
 using Cinemachine;
-using System.Collections;
 using System.Collections.Generic;
-using System.Net;
 using UnityEngine;
-using static Unity.Burst.Intrinsics.X86;
-using static UnityEditor.PlayerSettings;
+
+public enum IdObject
+{
+    Smoke,
+    Flame,
+    Detector
+}
+
 
 public class PlayerScript : MonoBehaviour
 {
@@ -18,7 +22,12 @@ public class PlayerScript : MonoBehaviour
     public bool couldown;
     public float timerCouldown;
 
+    int indexSave;
+
+    IdObject indexWeapon;
+
     [SerializeField] public GameObject flame;
+    [SerializeField] public GameObject detector;
 
     bool run;
     int rayonMove;
@@ -29,6 +38,8 @@ public class PlayerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        indexWeapon = 0;
+        indexSave = 0;
         listSmoke = new List<GameObject>();
         couldown = false;
         timerCouldown = 8.0f;
@@ -45,85 +56,127 @@ public class PlayerScript : MonoBehaviour
 
         if (!isHide)
         {
-            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
-            {
-                rayonMove = 5;
-            }
-            else
-            {
-                rayonMove = 1;
-            }
-            if (Input.GetAxis("Jump") != 0)
+           
+            if (Input.GetKey(KeyCode.LeftShift))
             {
                 run = true;
                 add = 4;
                 valueMultiplySpeed = 1.5f;
             }
-            else
+            else 
             {
                 run = false;
                 add = 0;
                 valueMultiplySpeed = 1;
             }
+            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            {
+                rayonMove = 5;
+            }
+            else 
+            {
+                rayonMove = 1;
+            }
 
             transform.Translate(new Vector3(Input.GetAxis("Horizontal") * speed * Time.deltaTime, 0, Input.GetAxis("Vertical") * (speed * valueMultiplySpeed) * Time.deltaTime));
         }
+
     }
 
     void ShootPlayer()
     {
-        if (flame.activeSelf)
+        if (!Input.GetKey(KeyCode.C))
         {
-            if(Input.GetAxis("Fire1") != 0)
+            if (isHide == false)
             {
-                flame.GetComponent<Gun>().isFire = true;
+                if (Input.GetAxis("Mouse ScrollWheel") > 0) // forward
+                {
+                    indexWeapon++;
+                    if (indexWeapon > (IdObject)1)
+                    {
+                        indexWeapon = 0;
+                        indexSave = 0;
+                    }
+                }
+                else if (Input.GetAxis("Mouse ScrollWheel") < 0) // forward
+                {
+                    Debug.Log(Input.GetAxis("Mouse ScrollWheel"));
+                    indexWeapon--;
+                    if (indexWeapon < 0)
+                    {
+                        indexWeapon = (IdObject)1;
+                        indexSave = 1;
+                    }
+                }
+                indexWeapon = (IdObject)indexSave;
+            }
+        }
+        else 
+        {
+            if (!Input.GetKey(KeyCode.LeftShift))
+            {
+                indexWeapon = IdObject.Detector;
             }
             else
             {
-                flame.GetComponent<Gun>().isFire = false;
+                indexWeapon = (IdObject)indexSave;
             }
         }
-        else
+
+        switch (indexWeapon)
         {
-           
-            if (couldown)
-            {
-                /*   timerCouldown += Time.deltaTime;
-                   if (timerCouldown > 8.0f)
-                   {
-                       couldown = false;
-                       timerCouldown = 0;
-                   }
-                   if (timerCouldown > 6.0f)
-                   {
-                       if (listSmoke.Count > 0)
-                       {
-                           Destroy(listSmoke[0].gameObject);
-                           listSmoke.RemoveAt(0);
-                       }
-                   }*/
-                timerCouldown -= Time.deltaTime;
-                if (timerCouldown < 0f)
+            case IdObject.Smoke:
+                flame.SetActive(false);
+                detector.SetActive(false);
+                break;
+            case IdObject.Flame:
+                flame.SetActive(true);
+                detector.SetActive(false);
+                if (Input.GetAxis("Fire1") != 0)
                 {
-                    couldown = false;
-                    timerCouldown = 8.0f;
+                    flame.GetComponent<Gun>().isFire = true;
                 }
-                if (timerCouldown < 2.0f)
+                else
                 {
-                    if (listSmoke.Count > 0)
-                    {
-                        Destroy(listSmoke[0].gameObject);
-                        listSmoke.RemoveAt(0);
-                    }
+                    flame.GetComponent<Gun>().isFire = false;
+                }
+                break;
+            case IdObject.Detector:
+                flame.SetActive(false);
+                detector.SetActive(true);
+                break;
+            default:
+                break;
+        }
+
+        if (couldown)
+        {
+            timerCouldown -= Time.deltaTime;
+            if (timerCouldown < 0f)
+            {
+                couldown = false;
+                timerCouldown = 8.0f;
+            }
+            if (timerCouldown < 2.0f)
+            {
+                if (listSmoke.Count > 0)
+                {
+                    Destroy(listSmoke[0].gameObject);
+                    listSmoke.RemoveAt(0);
                 }
             }
         }
+
     }
 
+    public IdObject GetIDObject()
+    {
+        return indexWeapon;
+    }
     // Update is called once per frame
     void Update()
     {
-        
+
         Moveplayer();
         ShootPlayer();
     }
@@ -204,51 +257,47 @@ public class PlayerScript : MonoBehaviour
 
     private void HideOutState(GameObject door, Transform pos)
     {
+        Debug.Log(IsHideOut());
         if (isHide == false)
         {
-            if (door.transform.localRotation.y == 0)
-            {
-                door.transform.Rotate(0, 115, 0);
-            }
             if (IsHideOut())
             {
                 isHide = true;
-                Vector3 temp;
+                /*Vector3 temp;
                 temp.x = pos.transform.position.x;
                 temp.y = transform.position.y;
-                temp.z = pos.transform.position.z;
+                temp.z = pos.transform.position.z;*/
 
-                TPPlayerIn(temp);
+                //TPPlayerIn(temp);
                 door.transform.Rotate(0, -115, 0);
                 GetComponentInChildren<CinemachineVirtualCamera>().m_Lens.FieldOfView = 40;
+            }
+            else
+            {
+                if (door.transform.localRotation.y == 0)
+                {
+                    door.transform.Rotate(0, 115, 0);
+                }
             }
         }
         else
         {
-            if (door.transform.localRotation.y == 0)
-            {
-                door.transform.Rotate(0, 115, 0);
-            }
+            
             if (IsHideOut())
             {
                 isHide = false;
                 GetComponentInChildren<CinemachineVirtualCamera>().m_Lens.FieldOfView = 60;
+                if (door.transform.localRotation.y == 0)
+                {
+                    door.transform.Rotate(0, 115, 0);
+                }
             }
         }
     }
 
-    public bool ButtonFunction()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            return true;
-        }
-        return false;
-    }
-
     public void InteractFunction(GameObject door, Transform pos)
     {
-        if (Input.GetKeyUp(KeyCode.E))
+        if (Input.GetKey(KeyCode.E))
         {
             HideOutState(door, pos);
         }
@@ -273,7 +322,7 @@ public class PlayerScript : MonoBehaviour
                     Debug.DrawLine(transform.position, hit.point);
                     if (hit.collider.gameObject.tag == _pos.gameObject.tag)
                     {
-                         Debug.Log("see IA");
+                        //  Debug.Log("see IA");
                         return true;
                     }
                 }
@@ -286,6 +335,6 @@ public class PlayerScript : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-       // Gizmos.DrawSphere(transform.position, rayonMove + add);
+        Gizmos.DrawSphere(transform.position, rayonMove + add);
     }
 }

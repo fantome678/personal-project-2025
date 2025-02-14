@@ -6,11 +6,11 @@ using UnityEngine.AI;
 public class LookHideOut : Node
 {
     NavMeshAgent _Agent;
-    List<GameObject> _list;
-    public LookHideOut(NavMeshAgent agent, List<GameObject> list)
+    List<UnityEngine.GameObject> _list;
+    public LookHideOut(NavMeshAgent agent, List<UnityEngine.GameObject> list)
     {
         _Agent = agent;
-        _list = list;
+       _list = list;
     }
 
     public override NodeState Evaluate()
@@ -22,8 +22,10 @@ public class LookHideOut : Node
             if (EnemyIA.skillIA.isPursuit)//EnemyIA.isPursuit)
             {
                 int rand;
+                
                 if (_list.Count > 0)
                 {
+                    Debug.Log("fsf");
                     rand = Random.Range(0, _list.Count);
                     //Debug.Log(_list[rand].GetComponent<HideOutScript>().pos.transform.localPosition);
                     _Agent.SetDestination(_list[rand].GetComponent<HideOutScript>().pos.transform.position);

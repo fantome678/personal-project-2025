@@ -18,13 +18,14 @@ public class CreateSmoke : MonoBehaviour
     {
         if (Input.GetButtonUp("Fire1"))
         {
-            if (GetComponentInParent<PlayerScript>().couldown == false && GetComponentInParent<PlayerScript>().flame.activeSelf == false)
+            PlayerScript tempPlayerScript = GetComponentInParent<PlayerScript>();
+            if (tempPlayerScript.couldown == false && tempPlayerScript.GetIDObject() == IdObject.Smoke && tempPlayerScript.isHide == false)
             {
                 GameObject temp = Instantiate(prefab, GetComponentInParent<Transform>().position, transform.rotation);
 
                 temp.GetComponent<Rigidbody>().AddRelativeForce(0, 50, launchVelocity);
-                GetComponentInParent<PlayerScript>().listSmoke.Add(temp);
-                GetComponentInParent<PlayerScript>().couldown = true;
+                tempPlayerScript.listSmoke.Add(temp);
+                tempPlayerScript.couldown = true;
             }
         }
     }

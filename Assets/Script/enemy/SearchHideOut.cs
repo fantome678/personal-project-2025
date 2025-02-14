@@ -18,11 +18,6 @@ public class SearchHideOut : Node
         player = _player;
     }
 
-    private void Rotate(NavMeshAgent _agent, Vector3 _pos)
-    {
-        
-    }
-
     public override NodeState Evaluate()
     {
         if (script.OnSee(player.transform))
@@ -39,23 +34,12 @@ public class SearchHideOut : Node
             ClearData("last");
             ClearData("target");
 
-            
-
             if (agent.remainingDistance == 0)
             {
 
                 Vector3 target = ((Transform)GetData("HideOut")).forward;
 
-                /*   agent.transform.localRotation = Quaternion.Euler(new Vector3(0, 1, 0) * Vector3.Angle(agent.transform.forward, target));
-               Debug.Log(new Vector3(0, 1, 0) * Vector3.Angle(agent.transform.forward, target));*/
-
                 agent.transform.eulerAngles = new Vector3(0, ((Transform)GetData("HideOut")).eulerAngles.y + 180.0f, 0);
-
-               /* if (agent.transform.rotation.eulerAngles.y < target.y + 180f)
-                {
-                    agent.transform.localRotation *= Quaternion.Euler(new Vector3(0, 1*2, 1));
-                    Debug.Log(agent.transform.rotation.eulerAngles.y);
-                }*/
 
                 if (EnemyIA.skillIA.timerIACanSeeHideOut[0] > 8)
                 {
@@ -69,7 +53,6 @@ public class SearchHideOut : Node
             }
 
         }
-       // Debug.Log(EnemyIA.seeSomething);
         state = NodeState.RUNNING;
         return state;
     }

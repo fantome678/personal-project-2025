@@ -540,6 +540,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1602170153076318408}
   - component: {fileID: 6741796537607090876}
+  - component: {fileID: 6412840344420414482}
   m_Layer: 0
   m_Name: Collider
   m_TagString: FlameCollider
@@ -585,6 +586,27 @@ CapsuleCollider:
   m_Height: 2.6976976
   m_Direction: 1
   m_Center: {x: -0.00000020238124, y: -0.041656375, z: 0.8488486}
+--- !u!65 &6412840344420414482
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2405188463932042250}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.58, y: 1, z: 1}
+  m_Center: {x: 0.25, y: 0, z: 4.17}
 --- !u!1 &3512953560452457206
 GameObject:
   m_ObjectHideFlags: 0
@@ -5816,3 +5838,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFire: 0
+  colliderFlame: {fileID: 0}

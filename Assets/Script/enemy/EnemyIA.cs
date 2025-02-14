@@ -1,4 +1,5 @@
 using BehaviorTree;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
@@ -23,7 +24,7 @@ public class EnemyIA : Tree
     NavMeshAgent agent;
     ViewEnemy viewEnemy;
     public List<UnityEngine.Transform> pointPatroler;
-    public List<UnityEngine.GameObject> hideOutList = new List<UnityEngine.GameObject>();
+   
     public UnityEngine.GameObject Player;
     public static UnityEngine.Vector3 posSearch;
     public static StateActionPlayerScript skillIA;
@@ -44,7 +45,6 @@ public class EnemyIA : Tree
 
     private void Awake()
     {
-        // isPursuit = false;
         posSearch = new UnityEngine.Vector3(0, 0, 0);
         seeSomething = StateSee.none;
         FOV = enterFOV;
@@ -56,30 +56,32 @@ public class EnemyIA : Tree
         agent = GetComponent<NavMeshAgent>();
         GetComponentInChildren<ViewEnemy>().dis = 13;
         viewEnemy = GetComponentInChildren<ViewEnemy>();
-        hideOutList.AddRange(UnityEngine.GameObject.FindGameObjectsWithTag("HideOut"));
-        skillIA = UnityEngine.GameObject.FindObjectOfType<StateActionPlayerScript>();
-        for (int i = 0; i < hideOutList.Count; i++)
-        {
-            hideOutList[i].GetComponent<HideOutScript>().index = i;
-        }
+
+
+        StartCoroutine(GetStateAction());
 
         transformStatic = transform;
+    }
+
+    IEnumerator GetStateAction()
+    {
+        skillIA = FindObjectOfType<StateActionPlayerScript>();
+        yield return null;
     }
 
     public static void TPPlayer(UnityEngine.Vector3 _pos)
     {
         transformStatic.position = _pos;
-
     }
 
     protected override Node SetupTree()
     {
         Node root = new Selector(new List<Node>
          {
-
-            new Sequence(new List<Node> {
+            new Sequence(new List<Node>
+            {
                 new Retreat(agent, skillIA.PointToRetreat.transform.position),
-                new RetreatUpdate(agent),
+                new RetreatUpdate(agent, skillIA.PointToRetreat.transform.position),
             }),
 
             new Sequence(new List<Node>
@@ -96,7 +98,7 @@ public class EnemyIA : Tree
 
             new Sequence(new List<Node>
             {
-                new LookHideOut(agent, hideOutList),
+                new LookHideOut(agent, skillIA.hideOutList),
                 new SearchHideOut(agent, viewEnemy, Player),
             }),
 
@@ -123,7 +125,6 @@ public class EnemyIA : Tree
         if (other.CompareTag("FlameCollider"))
         {
             seeSomething = StateSee.retreat;
-            UnityEngine.Debug.Log("sqgsqgq");
         }
     }
 

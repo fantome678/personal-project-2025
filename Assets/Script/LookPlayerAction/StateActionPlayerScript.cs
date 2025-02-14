@@ -7,6 +7,7 @@ public class StateActionPlayerScript : MonoBehaviour
     [SerializeField] public GameObject PointToRetreat;
     [SerializeField] public PlayerScript script;
     [SerializeField] List<GameObject> triggerList;
+    [SerializeField] public List<UnityEngine.GameObject> hideOutList;
 
     public float[] timerIACanSeeHideOut;
     [SerializeField] private float timerGeneral;
@@ -20,11 +21,25 @@ public class StateActionPlayerScript : MonoBehaviour
     public bool GoPointSee;
     public bool isPursuit;
     public bool isPredict;
+
+    private void Awake()
+    {
+        hideOutList = new List<UnityEngine.GameObject>();
+        hideOutList.AddRange(UnityEngine.GameObject.FindGameObjectsWithTag("HideOut"));
+
+        for (int i = 0; i < hideOutList.Count; i++)
+        {
+            hideOutList[i].GetComponent<HideOutScript>().index = i;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         script = FindAnyObjectByType<PlayerScript>();
         triggerList.AddRange(GameObject.FindGameObjectsWithTag("Trigger"));
+        
+
         timerGeneral = 0;
         timerIACanSeeHideOut[0] = 0;
         timerIACanSeeHideOut[1] = 0;

@@ -23,23 +23,44 @@ public class HideOutScript : MonoBehaviour
       
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        
+    }
+
     private void OnTriggerStay(Collider other)
     {
-       
         if (other.CompareTag("Player"))
         {
-            //door.transform.Rotate(0, 115, 0);
-            //PlayerScript player = other.gameObject.GetComponent<PlayerScript>();
             other.GetComponentInParent<PlayerScript>().InteractFunction(door, transform);
         }
-        if (other.gameObject.CompareTag("IA"))
+        if (other.GetComponentInParent<EnemyIA>())
         {
-           // Debug.Log(other.gameObject.GetComponent<EnemyIA>().GetStateSee());
-            if (other.gameObject.GetComponent<EnemyIA>().GetStateSee() == EnemyIA.StateSee.lookHideOut)
+            if (other.GetComponentInParent<EnemyIA>().CompareTag("IA"))
             {
-                skillIA.timerIACanSeeHideOut[0] += Time.deltaTime;
+                if (other.gameObject.GetComponentInParent<EnemyIA>().GetStateSee() == EnemyIA.StateSee.lookHideOut)
+                {
+                    EnemyIA.skillIA.timerIACanSeeHideOut[0] += Time.deltaTime;
 
-                if (skillIA.timerIACanSeeHideOut[0] > 6)
+                    if (EnemyIA.skillIA.timerIACanSeeHideOut[0] > 6)
+                    {
+                        agent.carving = false;
+                        if (door.transform.localRotation.y == 0)
+                        {
+                            door.transform.Rotate(0, 115, 0);
+                        }
+                    }
+                    else if (EnemyIA.skillIA.timerIACanSeeHideOut[1] > 8)
+                    {
+                        if (door.transform.localRotation.y != 0)
+                        {
+                            door.transform.Rotate(0, -115, 0);
+                        }
+                    }
+                    EnemyIA.skillIA.timerIACanSeeHideOut[1] = 0;
+                }
+
+                if (other.gameObject.GetComponentInParent<EnemyIA>().GetStateSee() == EnemyIA.StateSee.see)
                 {
                     agent.carving = false;
                     if (door.transform.localRotation.y == 0)
@@ -47,25 +68,8 @@ public class HideOutScript : MonoBehaviour
                         door.transform.Rotate(0, 115, 0);
                     }
                 }
-                else if (skillIA.timerIACanSeeHideOut[1] > 8)
-                {
-                    if (door.transform.localRotation.y != 0)
-                    {
-                        door.transform.Rotate(0, -115, 0);
-                    }
-                }
-                skillIA.timerIACanSeeHideOut[1] = 0;
-            }
-            
-            if (other.gameObject.GetComponent<EnemyIA>().GetStateSee() == EnemyIA.StateSee.see)
-            {
-                agent.carving = false;
-                if (door.transform.localRotation.y == 0)
-                {
-                    door.transform.Rotate(0, 115, 0);
-                }
-            }
 
+            }
         }
     }
 
@@ -79,15 +83,18 @@ public class HideOutScript : MonoBehaviour
             }
             agent.carving = true;
         }
-        if (other.gameObject.CompareTag("IA"))
+        if (other.GetComponentInParent<EnemyIA>())
         {
-            if (door.transform.localRotation.y != 0)
+            if (other.GetComponentInParent<EnemyIA>().CompareTag("IA"))
             {
-                door.transform.Rotate(0, -115, 0);
-                skillIA.timerIACanSeeHideOut[0] = 0;
-                skillIA.timerIACanSeeHideOut[1] = 0;
+                if (door.transform.localRotation.y != 0)
+                {
+                    door.transform.Rotate(0, -115, 0);
+                    EnemyIA.skillIA.timerIACanSeeHideOut[0] = 0;
+                    EnemyIA.skillIA.timerIACanSeeHideOut[1] = 0;
+                }
+                agent.carving = true;
             }
-            agent.carving = true;
         }
     }
 }

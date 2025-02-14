@@ -22,20 +22,24 @@ public class UIState : MonoBehaviour
 
     void InitCanvas()
     {
-        if (playerScript.flame.activeSelf == false)
+        switch (playerScript.GetIDObject())
         {
-            if (playerScript.couldown)
-            {
-                textMeshProUGUI.text = "Time before launch " + (int)playerScript.timerCouldown;
-            }
-            else
-            {
-                textMeshProUGUI.text = "Ready to launch";
-            }
-        }
-        else
-        {
-            textMeshProUGUI.text = "ammo Flame " + playerScript.GetComponentInChildren<Gun>().GetAmmo();
+            case IdObject.Smoke:
+                if (playerScript.couldown)
+                {
+                    textMeshProUGUI.text = "Time before launch " + (int)playerScript.timerCouldown;
+                }
+                else
+                {
+                    textMeshProUGUI.text = "Ready to launch";
+                }
+                break;
+            case IdObject.Flame:
+                textMeshProUGUI.text = "ammo Flame " + playerScript.GetComponentInChildren<Gun>().GetAmmo();
+                break;
+            case IdObject.Detector:
+                textMeshProUGUI.text = "";
+                break;
         }
     }
 }

@@ -15,11 +15,10 @@ public class LookHideOut : Node
 
     public override NodeState Evaluate()
     {
-        //Debug.Log(EnemyIA.seeSomething);
 
         if (EnemyIA.seeSomething == EnemyIA.StateSee.none)
         {
-            if (EnemyIA.skillIA.isPursuit)//EnemyIA.isPursuit)
+            if (EnemyIA.dataIA.isPursuit)//EnemyIA.isPursuit)
             {
                 int rand;
                 
@@ -27,13 +26,10 @@ public class LookHideOut : Node
                 {
                     Debug.Log("fsf");
                     rand = Random.Range(0, _list.Count);
-                    //Debug.Log(_list[rand].GetComponent<HideOutScript>().pos.transform.localPosition);
                     _Agent.SetDestination(_list[rand].GetComponent<HideOutScript>().pos.transform.position);
-                    // _Agent.SetDestination(_list[rand].transform.position + _list[rand].GetComponent<HideOutScript>().pos.transform.localPosition);
                     parent.parent.SetData("HideOut", _list[rand].transform);
                     EnemyIA.seeSomething = EnemyIA.StateSee.lookHideOut;
-                   // EnemyIA.isPursuit = false;
-                    EnemyIA.skillIA.isPursuit = false;
+                    EnemyIA.dataIA.isPursuit = false;
                     state = NodeState.SUCCESS;
                     return state;
                 }
@@ -45,7 +41,6 @@ public class LookHideOut : Node
             }
 
         }
-
 
         state = NodeState.SUCCESS;
         return state;

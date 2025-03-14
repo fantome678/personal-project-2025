@@ -100,7 +100,6 @@ public class PlayerScript : MonoBehaviour
                 }
                 else if (Input.GetAxis("Mouse ScrollWheel") < 0) // forward
                 {
-                    Debug.Log(Input.GetAxis("Mouse ScrollWheel"));
                     indexWeapon--;
                     if (indexWeapon < 0)
                     {

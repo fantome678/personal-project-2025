@@ -1,4 +1,5 @@
 using BehaviorTree;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,19 +24,21 @@ public class EnemyIA : Tree
 
     NavMeshAgent agent;
     ViewEnemy viewEnemy;
-    public List<UnityEngine.Transform> pointPatroler;
-   
+
+    [UnityEngine.SerializeField] public int index;
     public UnityEngine.GameObject Player;
     public static UnityEngine.Vector3 posSearch;
     public static StateActionPlayerScript skillIA;
     public static UnityEngine.Vector3 pointOnSee;
     public static UnityEngine.Vector3 pointOnSeePos;
+    public static DataIA dataIA;
     public float enterFOV;
     public float enterSpeed;
     public static float FOV;
     public static float speed;
     public static float timerSearchPlayer;
     public static float timerCheckRoom;
+    public static float timerCheckRoom2;
     public static int counter;
     public static int counterSearch;
     public static UnityEngine.Transform transformStatic;
@@ -46,17 +49,20 @@ public class EnemyIA : Tree
     private void Awake()
     {
         posSearch = new UnityEngine.Vector3(0, 0, 0);
+        dataIA = new DataIA();
         seeSomething = StateSee.none;
         FOV = enterFOV;
         speed = enterSpeed;
         timerSearchPlayer = 0f;
         timerCheckRoom = 0f;
+        timerCheckRoom2 = 0f;
         counter = 0;
         counterSearch = 0;
         agent = GetComponent<NavMeshAgent>();
         GetComponentInChildren<ViewEnemy>().dis = 13;
         viewEnemy = GetComponentInChildren<ViewEnemy>();
 
+        
 
         StartCoroutine(GetStateAction());
 
@@ -66,7 +72,9 @@ public class EnemyIA : Tree
     IEnumerator GetStateAction()
     {
         skillIA = FindObjectOfType<StateActionPlayerScript>();
+       
         yield return null;
+        dataIA = skillIA.listDataIA[index];
     }
 
     public static void TPPlayer(UnityEngine.Vector3 _pos)
@@ -102,7 +110,7 @@ public class EnemyIA : Tree
                 new SearchHideOut(agent, viewEnemy, Player),
             }),
 
-            new PatrollerTask(agent, pointPatroler, Player),
+            new PatrollerTask(agent, Player),
          });
         return root;
     }
@@ -141,11 +149,14 @@ public class EnemyIA : Tree
 
     private void OnDrawGizmos()
     {
-        for (int i = 0; i < pointPatroler.Count; i++)
+        if (skillIA != null)
         {
-            UnityEngine.Gizmos.color = new UnityEngine.Color(1, 0, 0, 0.5f);
-            UnityEngine.Gizmos.DrawCube(pointPatroler[i].transform.position, new UnityEngine.Vector3(1, 1, 1));
+            for (int i = 0; i < skillIA.pointPatroler.Count; i++)
+            {
+                UnityEngine.Gizmos.color = new UnityEngine.Color(1, 0, 0, 0.5f);
+                UnityEngine.Gizmos.DrawCube(skillIA.pointPatroler[i].transform.position, new UnityEngine.Vector3(1, 1, 1));
 
+            }
         }
         //UnityEngine.Gizmos.DrawCube(((UnityEngine.Transform)Node.GetData("target")).position, new UnityEngine.Vector3(1, 1, 1));
     }

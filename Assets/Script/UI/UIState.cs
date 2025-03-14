@@ -35,7 +35,7 @@ public class UIState : MonoBehaviour
                 }
                 break;
             case IdObject.Flame:
-                textMeshProUGUI.text = "ammo Flame " + playerScript.GetComponentInChildren<Gun>().GetAmmo();
+                textMeshProUGUI.text = "Fuel " + playerScript.GetComponentInChildren<Gun>().GetAmmo();
                 break;
             case IdObject.Detector:
                 textMeshProUGUI.text = "";

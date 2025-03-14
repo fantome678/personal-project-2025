@@ -6,32 +6,30 @@ using System.Collections.Generic;
 public class PatrollerTask : Node
 {
     private NavMeshAgent agentTransform;
-    private List<Transform> moveAgent;
     private GameObject player;
     int index = 0;
 
-    public PatrollerTask(NavMeshAgent agent, List<Transform> _moveAgent, GameObject _player)
+    public PatrollerTask(NavMeshAgent agent, GameObject _player)
     {
         player = _player;
         agentTransform = agent;
-        moveAgent = _moveAgent;
     }
 
     public override NodeState Evaluate()
     {
         //Debug.Log(EnemyIA.seeSomething);
-        if (EnemyIA.seeSomething == EnemyIA.StateSee.none)
+        if (EnemyIA.seeSomething == EnemyIA.StateSee.none && EnemyIA.skillIA != null)
         {
             ClearData("target");
 
-            if (!EnemyIA.skillIA.GoPointSee)
+            if (!EnemyIA.dataIA.GoPointSee)
             {
                 if (agentTransform.remainingDistance < 0.1f)
                 {
 
-                    index = Random.Range(0, moveAgent.Count);
+                    index = Random.Range(0, EnemyIA.skillIA.pointPatroler.Count);
 
-                    agentTransform.SetDestination(moveAgent[index].position);
+                    agentTransform.SetDestination(EnemyIA.skillIA.pointPatroler[index].position);
                     agentTransform.speed = EnemyIA.speed;
 
                 }
@@ -82,7 +80,6 @@ public class PatrollerTask : Node
                 }
 
             }*/
-            // Debug.Log("run" + index);
         }
         state = NodeState.RUNNING;
         return state;

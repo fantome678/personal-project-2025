@@ -19,7 +19,6 @@ public class CheckRoom : Node
 
     public override NodeState Evaluate()
     {
-
         if (_ViewEnemy.OnSee(EnemyIA.skillIA.script.transform))
         {
             EnemyIA.seeSomething = EnemyIA.StateSee.see;
@@ -34,47 +33,58 @@ public class CheckRoom : Node
         if (EnemyIA.seeSomething == EnemyIA.StateSee.look)
         {
             Vector3 posSave = (Vector3)GetData("seePoint");
-
-            Debug.Log("in look");
             Vector3 randomOffset = Random.insideUnitSphere;
+
             EnemyIA.timerCheckRoom += Time.deltaTime;
-            if (EnemyIA.timerCheckRoom > 2)
+            if (EnemyIA.timerCheckRoom > 2 && EnemyIA.timerCheckRoom2 < 3)
             {
                 EnemyIA.timerCheckRoom = 0; // Réinitialisation du timer
 
                 randomOffset.y = 0.0f; // Fixe la composante Y pour éviter de se déplacer verticalement
-                randomOffset *= 5; // Multiplie pour avoir un décalage suffisant
+                randomOffset *= 0.5f; // Multiplie pour avoir un décalage suffisant
 
                 NavMeshHit hit;
+                _agent.transform.LookAt(posSave + randomOffset);
                 // Si le point aléatoire est accessible (trouvé sur le NavMesh)
                 if (NavMesh.SamplePosition(posSave + randomOffset, out hit, 1.0f, NavMesh.AllAreas))
                 {
                     // On déplace l'ennemi vers la position cible
-                    _agent.transform.LookAt(posSave + randomOffset);
                     _agent.SetDestination(posSave + randomOffset);
                 }
                 else
                 {
-                    // Si la position n'est pas valide, on essaie de trouver une autre position
-                    // (c'est pour éviter un blocage si la position aléatoire est inaccessible)
-                    randomOffset = Random.insideUnitSphere; // Recalcule un autre offset
-                    randomOffset.y = 0.0f;
-                    randomOffset *= 5;
-
-                    if (NavMesh.SamplePosition(posSave + randomOffset, out hit, 1.0f, NavMesh.AllAreas))
+                    // Si la position n'est pas valide, on essaie plusieurs fois avec un rayon plus large
+                    bool foundNewPosition = false;
+                    int y = 0;
+                    for (int i = 0; i < 100; i++)
                     {
-                        _agent.transform.LookAt(posSave + randomOffset);
-                        _agent.SetDestination(posSave + randomOffset);
+                        randomOffset = Random.insideUnitSphere; // Recalcule un autre offset
+                        randomOffset.y = 0.0f;
+                        randomOffset *= 0.5f;
+                        if (y > 10)
+                        {
+                            _agent.transform.LookAt(posSave + randomOffset);
+                            y = 0;
+                        }
+                        // Augmente le rayon de recherche pour éviter que l'ennemi se bloque dans un petit couloir
+                        if (NavMesh.SamplePosition(posSave + randomOffset, out hit, 2.0f, NavMesh.AllAreas))
+                        {
+                            _agent.transform.LookAt(posSave + randomOffset);
+                            _agent.SetDestination(posSave + randomOffset);
+                            foundNewPosition = true;
+                            break;
+                        }
+                        y++;
+                    }
+                    // Si on n'a pas trouvé de nouvelle position, on pourrait réinitialiser l'agent
+                    if (!foundNewPosition)
+                    {
+                        // L'ennemi pourrait soit s'arrêter, ou revenir à un comportement de recherche
+                        _agent.ResetPath(); // Réinitialise le chemin et évite le blocage
                     }
                 }
+                EnemyIA.timerCheckRoom2++;
             }
-
-            if (EnemyIA.timerCheckRoom > 2) // Si le temps total passé à chercher un mouvement est trop long
-            {
-                EnemyIA.seeSomething = EnemyIA.StateSee.none; // Changement d'état pour éviter de bloquer
-                ClearData("seePoint"); // Nettoie la donnée
-            }
-
         }
         state = NodeState.RUNNING;
         return state;

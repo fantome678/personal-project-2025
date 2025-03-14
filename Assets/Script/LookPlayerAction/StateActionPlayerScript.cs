@@ -1,15 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static EnemyIA;
+
+[System.Serializable]
+public class DataIA
+{
+    public bool GoPointSee = false;
+    public bool isPursuit = false;
+    public bool isPredict = true;
+
+    public float[] timerIACanSeeHideOut;
+
+    public StateSee seeSomething = StateSee.none;
+}
 
 public class StateActionPlayerScript : MonoBehaviour
 {
     [SerializeField] public GameObject PointToRetreat;
     [SerializeField] public PlayerScript script;
     [SerializeField] List<GameObject> triggerList;
-    [SerializeField] public List<UnityEngine.GameObject> hideOutList;
 
-    public float[] timerIACanSeeHideOut;
+    [SerializeField] public List<UnityEngine.GameObject> hideOutList;
+    [SerializeField] public List<UnityEngine.Transform> pointPatroler;
+
+    //public float[] timerIACanSeeHideOut;
     [SerializeField] private float timerGeneral;
     [SerializeField] private float timerBeforeGivePlayerPos;
     [SerializeField] private float timerBeforeHideOut;
@@ -17,10 +32,11 @@ public class StateActionPlayerScript : MonoBehaviour
     [SerializeField] private bool IAHasPosplayer;
     [SerializeField] private bool IACanSeeHideOut;
     [SerializeField] private bool IAPredictYourMove;
+    [SerializeField] public List<DataIA> listDataIA;
 
-    public bool GoPointSee;
-    public bool isPursuit;
-    public bool isPredict;
+    // public bool GoPointSee;
+    //public bool isPursuit;
+    //public bool isPredict;
 
     private void Awake()
     {
@@ -31,6 +47,14 @@ public class StateActionPlayerScript : MonoBehaviour
         {
             hideOutList[i].GetComponent<HideOutScript>().index = i;
         }
+        listDataIA = new List<DataIA>();
+
+        for (int i = 0; i < 2; i++)
+        {
+            DataIA temp = new DataIA();
+            temp.timerIACanSeeHideOut = new float[2];
+            listDataIA.Add(temp);
+        }
     }
 
     // Start is called before the first frame update
@@ -38,18 +62,21 @@ public class StateActionPlayerScript : MonoBehaviour
     {
         script = FindAnyObjectByType<PlayerScript>();
         triggerList.AddRange(GameObject.FindGameObjectsWithTag("Trigger"));
-        
+
 
         timerGeneral = 0;
-        timerIACanSeeHideOut[0] = 0;
-        timerIACanSeeHideOut[1] = 0;
+        for (int i = 0; i < listDataIA.Count; i++)
+        {
+            listDataIA[i].timerIACanSeeHideOut[0] = 0;
+            listDataIA[i].timerIACanSeeHideOut[1] = 0;
+        }
         timerBeforeHideOut = 0;
         timerIsPredict = 0;
 
         IACanSeeHideOut = false;
         IAHasPosplayer = false;
-        isPursuit = false;
-        isPredict = true;
+        //isPursuit = false;
+        //isPredict = true;
     }
 
     // Update is called once per frame
@@ -68,12 +95,18 @@ public class StateActionPlayerScript : MonoBehaviour
         {
             IAHasPosplayer = true;
         }
-        else if (IAHasPosplayer && GoPointSee == false)
+        else if (IAHasPosplayer)
         {
-            timerBeforeHideOut += Time.deltaTime;
-            if (timerBeforeHideOut > 60.0f)
+            for (int i = 0; i < listDataIA.Count; i++)
             {
-                GoPointSee = true;
+                if (listDataIA[i].GoPointSee == false)
+                {
+                    timerBeforeHideOut += Time.deltaTime;
+                    if (timerBeforeHideOut > 60.0f)
+                    {
+                        listDataIA[i].GoPointSee = true;
+                    }
+                }
             }
         }
     }
@@ -91,16 +124,24 @@ public class StateActionPlayerScript : MonoBehaviour
 
         if (IACanSeeHideOut && script.isHide)
         {
-            timerIACanSeeHideOut[1] += Time.deltaTime;
-            if (timerIACanSeeHideOut[1] > 15.0f)
+            for (int i = 0; i < listDataIA.Count; i++)
             {
-                isPursuit = true;
-                timerIACanSeeHideOut[1] = 0;
+                listDataIA[i].timerIACanSeeHideOut[1] += Time.deltaTime;
+                if (listDataIA[i].timerIACanSeeHideOut[1] > 15.0f)
+                {
+
+                    listDataIA[i].isPursuit = true;
+
+                    listDataIA[i].timerIACanSeeHideOut[1] = 0;
+                }
             }
         }
         else
         {
-            timerIACanSeeHideOut[1] = 0;
+            for (int i = 0; i < listDataIA.Count; i++)
+            {
+                listDataIA[i].timerIACanSeeHideOut[1] = 0;
+            }
         }
     }
 
@@ -112,35 +153,41 @@ public class StateActionPlayerScript : MonoBehaviour
         }
         else
         {
-            if (IAPredictYourMove && timerIsPredict < 15f && isPredict == false)
+            for (int i = 0; i < listDataIA.Count; i++)
             {
-                timerIsPredict += Time.deltaTime;
-            }
-            else
-            {
-                isPredict = true;
-                timerIsPredict = 0;
+                if (IAPredictYourMove && timerIsPredict < 15f && listDataIA[i].isPredict == false)
+                {
+                    timerIsPredict += Time.deltaTime;
+                }
+                else
+                {
+                    listDataIA[i].isPredict = true;
+                    timerIsPredict = 0;
+                }
             }
         }
     }
 
     public Vector3 IsPursuitState()
     {
-            for (int i = 0; i < triggerList.Count; i++)
+        for (int i = 0; i < triggerList.Count; i++)
+        {
+            if (triggerList[i].GetComponent<IAHelpScript>().playerIsEnter)
             {
-                if (triggerList[i].GetComponent<IAHelpScript>().playerIsEnter)
-                {
-                    Debug.Log(triggerList[i].GetComponent<IAHelpScript>().posToSpawnAI);
-                    return triggerList[i].GetComponent<IAHelpScript>().posToSpawnAI;
-                }
+                Debug.Log(triggerList[i].GetComponent<IAHelpScript>().posToSpawnAI);
+                return triggerList[i].GetComponent<IAHelpScript>().posToSpawnAI;
             }
+        }
         return Vector3.zero;
     }
 
     public void ResetTimer()
     {
         timerBeforeHideOut = 0;
-        GoPointSee = false;
+        for (int i = 0; i < listDataIA.Count; i++)
+        {
+            listDataIA[i].GoPointSee = false;
+        }
     }
 
     public Transform GetPlayer()

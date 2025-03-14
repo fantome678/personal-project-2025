@@ -41,7 +41,7 @@ public class SearchHideOut : Node
 
                 agent.transform.eulerAngles = new Vector3(0, ((Transform)GetData("HideOut")).eulerAngles.y + 180.0f, 0);
 
-                if (EnemyIA.skillIA.timerIACanSeeHideOut[0] > 8)
+                if (EnemyIA.dataIA.timerIACanSeeHideOut[0] > 8)
                 {
                     EnemyIA.seeSomething = EnemyIA.StateSee.none;
                     ClearData("last");

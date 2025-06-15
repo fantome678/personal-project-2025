@@ -29,7 +29,7 @@ public class ViewEnemy : MonoBehaviour
             if (angle < detectAngle)
             {
                 RaycastHit hit;
-                if (Physics.Raycast(transform.position, disPlayerEnemy, out hit)) // visible physique
+                if (Physics.Raycast(transform.position, disPlayerEnemy, out hit))
                 {
                      Debug.DrawLine(transform.position, hit.point);
                     if (hit.collider.gameObject.tag == _Player.gameObject.tag)

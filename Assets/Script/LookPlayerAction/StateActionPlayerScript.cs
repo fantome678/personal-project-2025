@@ -10,7 +10,7 @@ public class DataIA
     public bool isPursuit = false;
     public bool isPredict = true;
 
-    public float[] timerIACanSeeHideOut;
+    public float timerIACanSeeHideOut;
 
     public StateSee seeSomething = StateSee.none;
 }
@@ -24,7 +24,7 @@ public class StateActionPlayerScript : MonoBehaviour
     [SerializeField] public List<UnityEngine.GameObject> hideOutList;
     [SerializeField] public List<UnityEngine.Transform> pointPatroler;
 
-    //public float[] timerIACanSeeHideOut;
+    public float timerIACanSeeHideOutGeneral;
     [SerializeField] private float timerGeneral;
     [SerializeField] private float timerBeforeGivePlayerPos;
     [SerializeField] private float timerBeforeHideOut;
@@ -34,9 +34,7 @@ public class StateActionPlayerScript : MonoBehaviour
     [SerializeField] private bool IAPredictYourMove;
     [SerializeField] public List<DataIA> listDataIA;
 
-    // public bool GoPointSee;
-    //public bool isPursuit;
-    //public bool isPredict;
+    public bool waiting;
 
     private void Awake()
     {
@@ -47,14 +45,6 @@ public class StateActionPlayerScript : MonoBehaviour
         {
             hideOutList[i].GetComponent<HideOutScript>().index = i;
         }
-        listDataIA = new List<DataIA>();
-
-        for (int i = 0; i < 2; i++)
-        {
-            DataIA temp = new DataIA();
-            temp.timerIACanSeeHideOut = new float[2];
-            listDataIA.Add(temp);
-        }
     }
 
     // Start is called before the first frame update
@@ -63,20 +53,18 @@ public class StateActionPlayerScript : MonoBehaviour
         script = FindAnyObjectByType<PlayerScript>();
         triggerList.AddRange(GameObject.FindGameObjectsWithTag("Trigger"));
 
-
         timerGeneral = 0;
         for (int i = 0; i < listDataIA.Count; i++)
         {
-            listDataIA[i].timerIACanSeeHideOut[0] = 0;
-            listDataIA[i].timerIACanSeeHideOut[1] = 0;
+            listDataIA[i].timerIACanSeeHideOut = 0;
         }
+
         timerBeforeHideOut = 0;
         timerIsPredict = 0;
 
         IACanSeeHideOut = false;
         IAHasPosplayer = false;
-        //isPursuit = false;
-        //isPredict = true;
+        waiting = false;
     }
 
     // Update is called once per frame
@@ -91,7 +79,7 @@ public class StateActionPlayerScript : MonoBehaviour
 
     void StateInformationPlayer()
     {
-        if (timerGeneral > 30.0f && IAHasPosplayer == false)
+      /*  if (timerGeneral > 30.0f && IAHasPosplayer == false)
         {
             IAHasPosplayer = true;
         }
@@ -108,7 +96,12 @@ public class StateActionPlayerScript : MonoBehaviour
                     }
                 }
             }
-        }
+        }*/
+    }
+
+    public void ScriptFunction()
+    {
+        listDataIA[Random.Range(0, listDataIA.Count)].isPursuit = true;
     }
 
     void StateIACanSeeHideOut()
@@ -124,24 +117,25 @@ public class StateActionPlayerScript : MonoBehaviour
 
         if (IACanSeeHideOut && script.isHide)
         {
-            for (int i = 0; i < listDataIA.Count; i++)
+           
+            if (waiting == false)
             {
-                listDataIA[i].timerIACanSeeHideOut[1] += Time.deltaTime;
-                if (listDataIA[i].timerIACanSeeHideOut[1] > 15.0f)
+                if (timerIACanSeeHideOutGeneral > 15.0f)
                 {
+                    listDataIA[Random.Range(0, listDataIA.Count)].isPursuit = true;
 
-                    listDataIA[i].isPursuit = true;
-
-                    listDataIA[i].timerIACanSeeHideOut[1] = 0;
+                    waiting = true;
                 }
-            }
+                else
+                {
+                    timerIACanSeeHideOutGeneral += Time.deltaTime;
+                }
+                //timerIACanSeeHideOutGeneral = 0;
+            } 
         }
         else
         {
-            for (int i = 0; i < listDataIA.Count; i++)
-            {
-                listDataIA[i].timerIACanSeeHideOut[1] = 0;
-            }
+            timerIACanSeeHideOutGeneral = 0;
         }
     }
 

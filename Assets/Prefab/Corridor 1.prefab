@@ -239,8 +239,8 @@ Transform:
   m_GameObject: {fileID: 472239875955916242}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: 3.37, y: 1.75, z: -3.4656}
-  m_LocalScale: {x: 3.3000004, y: 3.5898, z: 3.2000003}
+  m_LocalPosition: {x: 3.37, y: 1.7116, z: -3.4656}
+  m_LocalScale: {x: 3.3000004, y: 3.5129783, z: 3.2000003}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8971093014196884151}
@@ -326,7 +326,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.57, z: 0.5}
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
   m_MoveThreshold: 0.1
   m_Carve: 0
   m_CarveOnlyStationary: 1
@@ -661,6 +661,7 @@ GameObject:
   - component: {fileID: 532884509068219328}
   - component: {fileID: 332573253243179130}
   - component: {fileID: 3705666743261275707}
+  - component: {fileID: 4948509054307211206}
   m_Layer: 0
   m_Name: Button
   m_TagString: Untagged
@@ -758,6 +759,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 12.554947, y: 12.919898, z: 11.119045}
   m_Center: {x: 1.6251602, y: -4.952068, z: 5.0595226}
+--- !u!114 &4948509054307211206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2125201215177169533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87389271a58c6ef46afd624c9e8b7fe4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doorScript: {fileID: 4982470014320592656}
 --- !u!1 &2480500306057631655
 GameObject:
   m_ObjectHideFlags: 0
@@ -1229,7 +1243,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.57, z: 0.5}
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
   m_MoveThreshold: 0.1
   m_Carve: 0
   m_CarveOnlyStationary: 1
@@ -1245,6 +1259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8971093014196884151}
   - component: {fileID: 7917669427812347521}
+  - component: {fileID: 4506678796595570803}
   m_Layer: 0
   m_Name: Corridor 1
   m_TagString: Corridor
@@ -1291,8 +1306,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AgentTypeID: 0
-  m_StartPoint: {x: -2.61, y: 0, z: 0}
-  m_EndPoint: {x: 3.6885355, y: 3.32, z: 0}
+  m_StartPoint: {x: -0.24047852, y: 0, z: 0}
+  m_EndPoint: {x: -0.22753143, y: 5.3543453, z: 0}
+  m_Width: 0
+  m_CostModifier: -1
+  m_Bidirectional: 1
+  m_AutoUpdatePosition: 0
+  m_Area: 0
+--- !u!114 &4506678796595570803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6198179508133637836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eeb5dc026fdf4b488bc7ae0138ab719, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_StartPoint: {x: 0.4882126, y: 5.3274403, z: 0}
+  m_EndPoint: {x: 3.5330791, y: 3.530072, z: 0}
   m_Width: 0
   m_CostModifier: -1
   m_Bidirectional: 1
@@ -1414,7 +1449,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.57, z: 0.5}
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
   m_MoveThreshold: 0.1
   m_Carve: 0
   m_CarveOnlyStationary: 1
@@ -1660,8 +1695,8 @@ Transform:
   m_GameObject: {fileID: 7646443173101489755}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: 3.37, y: 1.7874, z: 3.2}
-  m_LocalScale: {x: 3.3000004, y: 3.5898, z: 3.2000003}
+  m_LocalPosition: {x: 3.37, y: 1.7194, z: 3.2}
+  m_LocalScale: {x: 3.3000004, y: 3.4537466, z: 3.2000003}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8971093014196884151}
@@ -1726,7 +1761,7 @@ NavMeshObstacle:
   m_Enabled: 1
   serializedVersion: 3
   m_Shape: 1
-  m_Extents: {x: 0.5, y: 0.57, z: 0.5}
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
   m_MoveThreshold: 0.1
   m_Carve: 0
   m_CarveOnlyStationary: 1
@@ -2169,6 +2204,11 @@ PrefabInstance:
       addedObject: {fileID: 2860868638111321635}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f36beada84865034ca84b30b4066b24c, type: 3}
+--- !u!1 &4982470014320592656 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1440558328079924843, guid: f36beada84865034ca84b30b4066b24c, type: 3}
+  m_PrefabInstance: {fileID: 6257943267115170171}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7207946971304637706 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3665766999935765617, guid: f36beada84865034ca84b30b4066b24c, type: 3}

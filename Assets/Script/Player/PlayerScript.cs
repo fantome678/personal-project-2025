@@ -12,6 +12,8 @@ public enum IdObject
 
 public class PlayerScript : MonoBehaviour
 {
+    public DoorScript.DoorStage KeySecurity;
+
     public bool isHide;
     public float sensitivity = 10f;
     public float maxYAngle = 80f;
@@ -38,6 +40,7 @@ public class PlayerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+       // KeySecurity = DoorScript.DoorStage.none;
         indexWeapon = 0;
         indexSave = 0;
         listSmoke = new List<GameObject>();
@@ -256,18 +259,12 @@ public class PlayerScript : MonoBehaviour
 
     private void HideOutState(GameObject door, Transform pos)
     {
-        Debug.Log(IsHideOut());
+        
         if (isHide == false)
         {
             if (IsHideOut())
             {
                 isHide = true;
-                /*Vector3 temp;
-                temp.x = pos.transform.position.x;
-                temp.y = transform.position.y;
-                temp.z = pos.transform.position.z;*/
-
-                //TPPlayerIn(temp);
                 door.transform.Rotate(0, -115, 0);
                 GetComponentInChildren<CinemachineVirtualCamera>().m_Lens.FieldOfView = 40;
             }
@@ -296,7 +293,7 @@ public class PlayerScript : MonoBehaviour
 
     public void InteractFunction(GameObject door, Transform pos)
     {
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKeyUp(KeyCode.E))
         {
             HideOutState(door, pos);
         }
@@ -321,7 +318,6 @@ public class PlayerScript : MonoBehaviour
                     Debug.DrawLine(transform.position, hit.point);
                     if (hit.collider.gameObject.tag == _pos.gameObject.tag)
                     {
-                        //  Debug.Log("see IA");
                         return true;
                     }
                 }

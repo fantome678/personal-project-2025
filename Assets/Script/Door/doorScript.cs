@@ -5,17 +5,29 @@ using UnityEngine.AI;
 
 public class DoorScript : MonoBehaviour
 {
+    public enum DoorStage
+    {
+        none,
+        zero,
+        one, 
+        two
+    }
+
     [SerializeField] float speed;
-    [SerializeField] GameObject trigger;
+    [SerializeField] GameObject triggerPursuit;
+    [SerializeField] GameObject triggerScript;
+    [SerializeField] public DoorStage doorStage;
     public bool isOpen;
     Vector3 posBegin;
     Vector3 posEnd;
+    bool UniqueOpen;
+    public float dist;
     // Start is called before the first frame update
     void Start()
     {
         posBegin = transform.position;
         // Debug.Log(posBegin);
-        posEnd = new Vector3(transform.position.x, transform.position.y + 8.0f, transform.position.z);
+        posEnd = new Vector3(transform.position.x, transform.position.y + dist, transform.position.z);
         // Debug.Log(posEnd);
         if (isOpen)
         {
@@ -35,30 +47,40 @@ public class DoorScript : MonoBehaviour
 
     private void Move()
     {
-        if (isOpen)
-        {
-            if (transform.position.y < posEnd.y)
-            {
-                transform.Translate(0, speed * Time.deltaTime, 0);
+        //if (doorStage == DoorStage.none)
+      //  {
+            DoorAction();
+      //  }
+    }
 
-            }
-           // GetComponent<NavMeshObstacle>().carving = false;
-            if (trigger != null)
-            {
-                trigger.SetActive(true);
-            }
-        }
-        else
+    void DoorAction()
+    {
+        if (UniqueOpen == false)
         {
-            if (transform.position.y > posBegin.y)
+            if (isOpen)
             {
-                transform.Translate(0, -speed * Time.deltaTime, 0);
+                if (transform.position.y < posEnd.y)
+                {
+                    transform.Translate(0, speed * Time.deltaTime, 0);
+                    Debug.Log("speed");
+                }
 
+                if (triggerPursuit != null)
+                {
+                    triggerPursuit.SetActive(true);
+                }
             }
-            //GetComponent<NavMeshObstacle>().carving = true;
-            if (trigger != null)
+            else
             {
-                trigger.SetActive(false);
+                if (transform.position.y > posBegin.y)
+                {
+                    transform.Translate(0, -speed * Time.deltaTime, 0);
+                }
+
+                if (triggerPursuit != null)
+                {
+                    triggerPursuit.SetActive(false);
+                }
             }
         }
     }

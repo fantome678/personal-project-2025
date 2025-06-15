@@ -1413,6 +1413,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7035937765256103674, guid: f36beada84865034ca84b30b4066b24c, type: 3}
+      propertyPath: dist
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7035937765256103674, guid: f36beada84865034ca84b30b4066b24c, type: 3}
+      propertyPath: doorStage
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1489,10 +1497,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3665766999935765617, guid: f36beada84865034ca84b30b4066b24c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7035937765256103674, guid: f36beada84865034ca84b30b4066b24c, type: 3}
-      propertyPath: isOpen
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

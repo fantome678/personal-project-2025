@@ -20,6 +20,17 @@ public class Gun : MonoBehaviour
     void Update()
     {
         TriggerGun(isFire);
+        /*if (flameParticles != null)
+        {
+            ParticleSystem.MainModule mainModule = flameParticles.main;
+
+            // La direction des particules peut être contrôlée via la vitesse du jet
+            mainModule.startRotation = Mathf.Atan2(transform.forward.y, transform.forward.x);
+
+            // Si tu veux que les particules continuent à avancer dans la direction de tir
+            var velocityOverLifetime = flameParticles.velocityOverLifetime;
+            velocityOverLifetime.x = 1f;  // Remplacer la valeur selon la direction
+        }*/
     }
 
     public void TriggerGun(bool isTrigger)

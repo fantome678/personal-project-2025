@@ -243,7 +243,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 8
   trigger: {fileID: 0}
+  doorStage: 1
   isOpen: 1
+  dist: 4
 --- !u!1 &1933070764388136520
 GameObject:
   m_ObjectHideFlags: 0

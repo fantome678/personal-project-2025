@@ -15,6 +15,7 @@ public class EnemyIA : Tree
         none,
         retreat,
         look,
+        looked,
         see,
         research,
         lookHideOut
@@ -22,7 +23,7 @@ public class EnemyIA : Tree
 
 
 
-    NavMeshAgent agent;
+   public NavMeshAgent agent;
     ViewEnemy viewEnemy;
 
     [UnityEngine.SerializeField] public int index;
@@ -31,20 +32,19 @@ public class EnemyIA : Tree
     public static StateActionPlayerScript skillIA;
     public static UnityEngine.Vector3 pointOnSee;
     public static UnityEngine.Vector3 pointOnSeePos;
-    public static DataIA dataIA;
+    public DataIA dataIA;
     public float enterFOV;
     public float enterSpeed;
     public static float FOV;
     public static float speed;
-    public static float timerSearchPlayer;
-    public static float timerCheckRoom;
-    public static float timerCheckRoom2;
-    public static int counter;
-    public static int counterSearch;
+    public float timerSearchPlayer;
+    public float timerCheckRoom;
+    public float timerCheckRoom2;
+    public int counter;
+    public int counterSearch;
     public static UnityEngine.Transform transformStatic;
-    // public static bool isPursuit;
 
-    public static StateSee seeSomething;
+    public StateSee seeSomething;
 
     private void Awake()
     {
@@ -62,7 +62,7 @@ public class EnemyIA : Tree
         GetComponentInChildren<ViewEnemy>().dis = 13;
         viewEnemy = GetComponentInChildren<ViewEnemy>();
 
-        
+
 
         StartCoroutine(GetStateAction());
 
@@ -72,14 +72,19 @@ public class EnemyIA : Tree
     IEnumerator GetStateAction()
     {
         skillIA = FindObjectOfType<StateActionPlayerScript>();
-       
-        yield return null;
-        dataIA = skillIA.listDataIA[index];
+
+        yield return new UnityEngine.WaitForSeconds(1.5f);
+
+        skillIA.listDataIA.Add(dataIA);
+
+        /*yield return new UnityEngine.WaitForSeconds(1.5f);
+         dataIA = skillIA.listDataIA[index];*/
     }
 
     public static void TPPlayer(UnityEngine.Vector3 _pos)
     {
         transformStatic.position = _pos;
+
     }
 
     protected override Node SetupTree()
@@ -88,29 +93,29 @@ public class EnemyIA : Tree
          {
             new Sequence(new List<Node>
             {
-                new Retreat(agent, skillIA.PointToRetreat.transform.position),
-                new RetreatUpdate(agent, skillIA.PointToRetreat.transform.position),
+                new Retreat(agent, skillIA.PointToRetreat.transform.position, this),
+                new RetreatUpdate(agent, this),
             }),
 
             new Sequence(new List<Node>
             {
-                new ViewPlayer(Player.transform, agent, viewEnemy),
-                new ToPlayerEnemy(agent, viewEnemy),
+                new ViewPlayer(Player.transform, agent, viewEnemy, this),
+                new ToPlayerEnemy(agent, viewEnemy, this),
             }),
 
             new Sequence(new List<Node>
             {
-                new GoSeePoint(agent, Player.GetComponentInParent<PlayerScript>()),
-                new CheckRoom(agent, viewEnemy),
+                new GoSeePoint(agent, Player.GetComponentInParent<PlayerScript>(), this),
+                new CheckRoom(agent, viewEnemy, this),
             }),
 
-            new Sequence(new List<Node>
+           new Sequence(new List<Node>
             {
-                new LookHideOut(agent, skillIA.hideOutList),
-                new SearchHideOut(agent, viewEnemy, Player),
+                new LookHideOut(agent, skillIA.hideOutList, Player, this),
+                new SearchHideOut(agent, viewEnemy, Player, this),
             }),
 
-            new PatrollerTask(agent, Player),
+            new PatrollerTask(agent, Player, this),
          });
         return root;
     }
@@ -133,15 +138,20 @@ public class EnemyIA : Tree
         if (other.CompareTag("FlameCollider"))
         {
             seeSomething = StateSee.retreat;
+            UnityEngine.Debug.Log("touched" + index);
         }
     }
 
-    public static void GameOver()
+    public void GameOver()
     {
-        SceneManager.LoadScene(0);
+        if (GetStateSee() != StateSee.retreat)
+        {
+            SceneManager.LoadScene(0);
+        }
+        //SceneManager.LoadScene(0);
     }
 
-    public static void ResetToPlayerEnemy()
+    public  void ResetToPlayerEnemy()
     {
         timerCheckRoom = 0f;
         counter = 0;

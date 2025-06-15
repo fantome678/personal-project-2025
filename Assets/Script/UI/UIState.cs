@@ -2,15 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIState : MonoBehaviour
 {
     [SerializeField] PlayerScript playerScript;
     public TextMeshProUGUI textMeshProUGUI;
+    [SerializeField] List<Image> keys;
     // Start is called before the first frame update
     void Start()
     {
         playerScript = FindAnyObjectByType<PlayerScript>();
+        for (int i = 0; i < keys.Count; i++) 
+        {
+            keys[i].enabled = false;
+        }
     }
 
     // Update is called once per frame
@@ -41,5 +47,10 @@ public class UIState : MonoBehaviour
                 textMeshProUGUI.text = "";
                 break;
         }
+        if (playerScript.KeySecurity > 0)
+        {
+            keys[(int)playerScript.KeySecurity - 1].enabled = true;
+        }
+
     }
 }

@@ -317,8 +317,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 0.9999975, z: 1.4159349}
+  m_Center: {x: 0, y: 0, z: 0.20796764}
 --- !u!195 &8703464750593807188
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -353,16 +353,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dfbca84dd8a03a499c0dd025d6d1552, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointPatroler:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  hideOutList: []
+  index: 0
   Player: {fileID: 0}
+  dataIA:
+    GoPointSee: 0
+    isPursuit: 0
+    isPredict: 1
+    timerIACanSeeHideOut: 0
+    seeSomething: 0
   enterFOV: 8
   enterSpeed: 3.5
+  timerSearchPlayer: 0
+  timerCheckRoom: 0
+  timerCheckRoom2: 0
+  counter: 0
+  counterSearch: 0
+  seeSomething: 0
 --- !u!54 &1114721561353880891
 Rigidbody:
   m_ObjectHideFlags: 0
